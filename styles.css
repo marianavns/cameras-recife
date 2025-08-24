@@ -1,0 +1,52 @@
+#map {
+	height: 800px;
+	width: 100%;
+}
+
+@media only screen and (max-width: 767px) {
+	#map {
+		height: 300px;
+	}
+}
+
+#marker {
+  background-image: url('/wp-content/uploads/2021/04/copywriter-logo-dark.svg');
+  background-size: cover;
+  width: 30px;
+  height: 30px;
+}
+
+.container {
+    width: 100%;
+    margin: 0;
+    max-width: 100%; 
+}
+
+.modal-content {
+  background: white;
+  border: none;
+  box-shadow: none;
+  max-width: 900px;      /* aumenta a largura máxima do modal */
+  max-height: 600px;     /* aumenta a altura máxima do modal */
+  width: 90vw;           /* ocupa até 90% da largura da tela */
+  height: auto;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#modalImage {
+  width: 100%;
+  height: auto;          /* mantém a proporção da imagem */
+  max-width: 100%;
+  max-height: 80vh;      /* limita a altura da imagem à altura da janela */
+  object-fit: contain;   /* garante que a imagem não distorça */
+  display: block;
+  margin: 0 auto;
+}
+
+.modal-dialog {
+  max-width: 90vw !important; /* ou o valor desejado */
+  width: 90vw !important;
+}
