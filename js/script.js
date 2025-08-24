@@ -1,11 +1,22 @@
 import { pontos } from './dataPins.js'; 
 import { API_KEY } from '../config.js';
-mapContent(); // Declara a função fora, pois o tipo do script que está no html é module. Sendo assim, o HTML não lê a função direto. Ela precisa ser "citada" fora.
+let api_key;
+
+fetch('/.netlify/functions/getData')
+  .then(res => res.json())
+  .then(data => {
+      api_key = data.key;
+      console.log("Chave recebida:", api_key);
+      mapContent(); 
+  })
+  .catch(err => console.error("Erro ao obter a chave:", err));
+
+// mapContent(); // Declara a função fora, pois o tipo do script que está no html é module. Sendo assim, o HTML não lê a função direto. Ela precisa ser "citada" fora.
 
 function mapContent() {
 
-    const api_key = API_KEY;
     const zoomLevel = 14;
+
     const map = criaMapa(api_key, zoomLevel, pontos);
     const popupOffsets = {
         top: [0, 0],
@@ -99,8 +110,3 @@ function adicionarMarcadores(pinsInput, mapInput, popupInput){
         });
     });
 }
-
-
-fetch('/.netlify/functions/getImage')
-  .then(res => res.json())
-  .then(data => console.log(data));
