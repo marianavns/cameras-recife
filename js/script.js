@@ -1,5 +1,5 @@
 import { pontos } from './dataPins.js'; 
-import { API_KEY } from '../config.js';
+// import { API_KEY } from '../config.js';
 let api_key;
 
 fetch('/.netlify/functions/getData')
