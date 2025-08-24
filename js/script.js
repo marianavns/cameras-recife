@@ -99,3 +99,8 @@ function adicionarMarcadores(pinsInput, mapInput, popupInput){
         });
     });
 }
+
+
+fetch('/.netlify/functions/getImage')
+  .then(res => res.json())
+  .then(data => console.log(data));
