@@ -1,22 +1,33 @@
 import { pontos } from './dataPins.js'; 
-// import { API_KEY } from '../config.js';
+
 let api_key;
+const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
 
-fetch('/.netlify/functions/getData')
-  .then(res => res.json())
-  .then(data => {
-      api_key = data.key;
-      console.log("Chave recebida:", api_key);
-      mapContent(); 
-  })
-  .catch(err => console.error("Erro ao obter a chave:", err));
+verificaLocation();
 
-// mapContent(); // Declara a função fora, pois o tipo do script que está no html é module. Sendo assim, o HTML não lê a função direto. Ela precisa ser "citada" fora.
+function verificaLocation(){
+    if (isLocal) {
+        import('../config.js').then(module => {
+            api_key = module.API_KEY;
+            console.log("Rodando local");
+            mapContent();
+        }).catch(err => console.error("Erro ao importar config.js:", err));
+    }
+    if (!isLocal){
+        fetch('/.netlify/functions/getData')
+            .then(res => res.json())
+            .then(data => {
+                api_key = data.key;
+                console.log("Rodando no Netlify");
+                mapContent(); 
+            })
+        .catch(err => console.error("Erro ao obter a chave:", err));
+    }
+}
 
 function mapContent() {
 
     const zoomLevel = 14;
-
     const map = criaMapa(api_key, zoomLevel, pontos);
     const popupOffsets = {
         top: [0, 0],
@@ -53,7 +64,6 @@ function atualizarImagem(ip) {
             document.getElementById("modalImage").src = novaUrl;
             document.getElementById("modalImage").alt = "";
             document.getElementById("modalImage").style.display = "block";
-            // Esconde o texto de aviso, se existir
             let aviso = document.getElementById("avisoImagem");
             if (aviso) aviso.style.display = "none";
         } else {
@@ -73,7 +83,6 @@ function mostrarAvisoImagem() {
     modalImage.src = "";
     modalImage.alt = "Imagem não encontrada";
     modalImage.style.display = "none";
-    // Mostra o texto de aviso
     let aviso = document.getElementById("avisoImagem");
     if (!aviso) {
         aviso = document.createElement("div");
