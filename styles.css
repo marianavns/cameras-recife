@@ -50,3 +50,15 @@
   max-width: 90vw !important; /* ou o valor desejado */
   width: 90vw !important;
 }
+
+#cameraModal .modal-content {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+#cameraModal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
