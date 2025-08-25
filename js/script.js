@@ -56,7 +56,7 @@ function captureImages(ip) {
 
         let timeout = setTimeout(() => {
             console.log("Imagem demorando para responder...");
-        }, 10000);
+        }, 5000);
 
         tempImg.onload = () => {
             clearTimeout(timeout);
@@ -74,8 +74,6 @@ function captureImages(ip) {
         tempImg.src = updatedImageURL;
     });
 }
-
-
 
 function mostrarAvisoImagem() {
     document.getElementById("modalImage").src = "";
@@ -98,19 +96,13 @@ function mostrarAvisoImagem() {
 }
 
 function createMarkers(pinsInput, mapInput, popupInput){
-    const modalEl = document.getElementById('cameraModal');
-    const modalContent = modalEl.querySelector('.modal-content');
-    const myModal = new bootstrap.Modal(modalEl);
+    const modalElement = document.getElementById('cameraModal');
+    const modalContent = modalElement.querySelector('.modal-content');
+    const myModal = new bootstrap.Modal(modalElement);
     let closeTimeout;
-    let openTimeout;
 
-    modalContent.addEventListener('mouseenter', () => {
-        clearTimeout(closeTimeout);
-    });
-
-    modalContent.addEventListener('mouseleave', () => {
-        closeTimeout = setTimeout(() => myModal.hide(), 200);
-    });
+    modalContent.addEventListener('mouseenter', () => { clearTimeout(closeTimeout); });
+    modalContent.addEventListener('mouseleave', () => { closeTimeout = setTimeout(() => myModal.hide(), 200); });
 
     pinsInput.forEach(ponto => {
         const marker = new tt.Marker().setLngLat({ lat: ponto.lat, lng: ponto.lng }).addTo(mapInput);
@@ -118,29 +110,21 @@ function createMarkers(pinsInput, mapInput, popupInput){
         marker.setPopup(popup);
         (async () => {
             const resultado = await captureImages(ponto.ip);
-            console.log("Atualização finalizada: " + ponto.ip);
-                                        if (resultado === true) {
-                console.log("Imagem puxada com sucesso: " + resultado);
-            }
-            if (resultado === false) {
-                console.log("Imagem não encontrada: " + resultado);
-            }
+            console.log(resultado ? `Imagem "${ponto.endereco}" encontrada com sucesso.` : `Imagem "${ponto.endereco}" não encontrada.`);
         })();
-        const markerElement = marker.getElement();
-
-        markerElement.addEventListener("mouseenter", () => {
-            (async () => {
-                const resultado = await captureImages(ponto.ip);
-                console.log("Atualização finalizada: " + ponto.ip);
-            })();
-
-            clearTimeout(openTimeout);
-            openTimeout = setTimeout(() => myModal.show(), 200);
-        });
-
-        markerElement.addEventListener("mouseleave", () => {
-            clearTimeout(openTimeout);
-            closeTimeout = setTimeout(() => myModal.hide(), 200);
-        });
+        openMarkerModal(marker, ponto, myModal);
     });
+}
+
+function openMarkerModal(markerInput, pontoInput, myModalInput){
+        let openTimeout;
+        const markerElement = markerInput.getElement();
+        markerElement.addEventListener("mouseenter", () => {  
+            document.getElementById('modalEndereco').textContent = pontoInput.endereco;
+            (async () => {
+                const resultado = await captureImages(pontoInput.ip);
+            })();
+            clearTimeout(openTimeout);
+            openTimeout = setTimeout(() => myModalInput.show(), 200);
+        });
 }
