@@ -54,19 +54,13 @@ function captureImages(ip) {
         const updatedImageURL = `https://transito.serttel.com.br/cttupe/index.php/portal/getImg/${ip}/?t=${timestamp}`;
         const tempImg = new Image();
 
-        let timeout = setTimeout(() => {
-            console.log("Imagem demorando para responder...");
-        }, 5000);
-
         tempImg.onload = () => {
-            clearTimeout(timeout);
             document.getElementById("modalImage").src = updatedImageURL;
             document.getElementById("modalImage").style.display = "block";
             resolve(true);
         }
 
         tempImg.onerror = () => {
-            clearTimeout(timeout);
             mostrarAvisoImagem();
             resolve(false);
         }
@@ -102,17 +96,21 @@ function createMarkers(pinsInput, mapInput, popupInput){
     let closeTimeout;
 
     modalContent.addEventListener('mouseenter', () => { clearTimeout(closeTimeout); });
-    modalContent.addEventListener('mouseleave', () => { closeTimeout = setTimeout(() => myModal.hide(), 200); });
+    // modalContent.addEventListener('mouseleave', () => { closeTimeout = setTimeout(() => myModal.hide(), 200); });
 
     pinsInput.forEach(ponto => {
-        const marker = new tt.Marker().setLngLat({ lat: ponto.lat, lng: ponto.lng }).addTo(mapInput);
-        const popup = new tt.Popup({ offset: popupInput }).setHTML(ponto.endereco);
-        marker.setPopup(popup);
-        (async () => {
-            const resultado = await captureImages(ponto.ip);
-            console.log(resultado ? `Imagem "${ponto.endereco}" encontrada com sucesso.` : `Imagem "${ponto.endereco}" não encontrada.`);
-        })();
-        openMarkerModal(marker, ponto, myModal);
+        let icon = document.createElement('div');
+        icon.className = 'marker-icon-success';
+
+            const marker = new tt
+                .Marker({element: icon})
+                .setLngLat({ lat: ponto.lat, lng: ponto.lng })
+                .addTo(mapInput);
+            const popup = new tt.Popup({ offset: popupInput }).setHTML(ponto.endereco);
+            marker.setPopup(popup);
+
+            openMarkerModal(marker, ponto, myModal);
+
     });
 }
 
