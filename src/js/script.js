@@ -7,7 +7,7 @@ initAppByLocation();
 
 function initAppByLocation(){
     if (isLocal) {
-        import('../config.js').then(module => {
+        import('../../config.js').then(module => {
             api_key = module.API_KEY;
             console.log("Local running...");
             createMapAndMarkers();
